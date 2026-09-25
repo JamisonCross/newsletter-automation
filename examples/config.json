@@ -1,0 +1,12 @@
+{
+  "publication_name": "Example Community Brief",
+  "region_name": "Example State",
+  "locality_keywords": ["example state", "metroville", "north county"],
+  "feed_urls": [],
+  "limits": {
+    "news": 3,
+    "take_action": 2,
+    "local_spotlight": 2
+  },
+  "editorial_guide": "examples/editorial-guide.md"
+}

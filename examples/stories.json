@@ -1,0 +1,44 @@
+[
+  {
+    "title": "Example State committee schedules public hearing on transit proposal",
+    "link": "https://example.invalid/transit-hearing",
+    "source": "Example Public Record",
+    "published": "2026-09-20T14:00:00+00:00"
+  },
+  {
+    "title": "Metroville library opens free technology workshop series",
+    "link": "https://example.invalid/library-workshops",
+    "source": "Metroville Community Desk",
+    "published": "2026-09-21T15:30:00+00:00"
+  },
+  {
+    "title": "Example State education budget enters committee review",
+    "link": "https://example.invalid/education-budget",
+    "source": "Example Public Record",
+    "published": "2026-09-22T12:00:00+00:00"
+  },
+  {
+    "title": "North County volunteers launch community food program",
+    "link": "https://example.invalid/food-program",
+    "source": "North County Bulletin",
+    "published": "2026-09-22T17:00:00+00:00"
+  },
+  {
+    "title": "Metroville council requests public comment on park proposal",
+    "link": "https://example.invalid/park-comment",
+    "source": "Metroville Public Notice",
+    "published": "2026-09-23T09:00:00+00:00"
+  },
+  {
+    "title": "Example State agency releases annual audit",
+    "link": "https://example.invalid/agency-audit",
+    "source": "Example Public Record",
+    "published": "2026-09-23T18:00:00+00:00"
+  },
+  {
+    "title": "Example State agency releases annual audit",
+    "link": "https://example.invalid/agency-audit-copy",
+    "source": "Duplicate Demonstration Source",
+    "published": "2026-09-23T18:05:00+00:00"
+  }
+]
