@@ -4,10 +4,9 @@
 from __future__ import annotations
 
 import argparse
+import calendar
 import json
 import re
-import sys
-import time
 from dataclasses import asdict, dataclass
 from datetime import datetime, timezone
 from pathlib import Path
@@ -96,10 +95,20 @@ def classify(story: Story, locality_keywords: list[str]) -> set[str]:
 
 
 def sort_recent(stories: Iterable[Story]) -> list[Story]:
-    return sorted(stories, key=lambda story: story.published or "", reverse=True)
+    def timestamp(story: Story) -> float:
+        try:
+            value = datetime.fromisoformat((story.published or "").replace("Z", "+00:00"))
+            if value.tzinfo is None:
+                value = value.replace(tzinfo=timezone.utc)
+            return value.timestamp()
+        except (ValueError, TypeError, OverflowError):
+            return float("-inf")
+    return sorted(stories, key=timestamp, reverse=True)
 
 
 def select_candidates(stories: list[Story], keywords: list[str], limits: dict[str, int]) -> dict[str, list[Story]]:
+    if any(type(value) is not int or value < 0 for value in limits.values()):
+        raise ValueError("Section limits must be nonnegative integers")
     buckets = {"news": [], "take_action": [], "local_spotlight": [], "general": []}
     for story in sort_recent(stories):
         for label in classify(story, keywords):
@@ -109,6 +118,8 @@ def select_candidates(stories: list[Story], keywords: list[str], limits: dict[st
 
     def take(pool: list[Story], count: int) -> list[Story]:
         chosen: list[Story] = []
+        if count == 0:
+            return chosen
         for story in pool:
             if story.link in used:
                 continue
@@ -136,7 +147,7 @@ def parse_time(entry: dict) -> Optional[str]:
     value = entry.get("published_parsed") or entry.get("updated_parsed")
     if not value:
         return None
-    return datetime.fromtimestamp(time.mktime(value), tz=timezone.utc).isoformat()
+    return datetime.fromtimestamp(calendar.timegm(value), tz=timezone.utc).isoformat()
 
 
 def fetch_feeds(urls: list[str]) -> list[Story]:
@@ -170,13 +181,19 @@ def extract_text(story: Story) -> Story:
 
     text = None
     if trafilatura is not None:
-        text = trafilatura.extract(response.text, url=response.url, include_comments=False, include_tables=False)
+        try:
+            text = trafilatura.extract(response.text, url=response.url, include_comments=False, include_tables=False)
+        except Exception:
+            text = None
     if (not text or len(text) < 300) and BeautifulSoup is not None:
-        soup = BeautifulSoup(response.text, "html.parser")
-        for tag in soup(["script", "style", "nav", "header", "footer", "aside"]):
-            tag.decompose()
-        container = soup.find("article") or soup.find("body")
-        text = container.get_text(" ", strip=True) if container else None
+        try:
+            soup = BeautifulSoup(response.text, "html.parser")
+            for tag in soup(["script", "style", "nav", "header", "footer", "aside"]):
+                tag.decompose()
+            container = soup.find("article") or soup.find("body")
+            text = container.get_text(" ", strip=True) if container else None
+        except Exception:
+            text = None
     if not text or len(text) < 300:
         return Story(**{**asdict(story), "extraction_note": "article text unavailable or too short"})
     text = re.sub(r"\s+", " ", text).strip()[:45000]
@@ -237,7 +254,7 @@ def main() -> int:
     if args.full_text:
         selected = {key: [extract_text(story) for story in value] for key, value in selected.items()}
 
-    guide_path = args.config.parent.parent / config["editorial_guide"]
+    guide_path = args.config.parent / config["editorial_guide"]
     guide = guide_path.read_text(encoding="utf-8")
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(build_prompt_pack(config, selected, guide), encoding="utf-8")

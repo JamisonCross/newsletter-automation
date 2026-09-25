@@ -41,7 +41,7 @@ The command prints selection counts and writes the generated prompt pack to `bui
 
 ## Run with RSS feeds
 
-Create a private copy of `examples/config.json`, add feed URLs, and install the optional live-source dependencies:
+Create private copies of `examples/config.json` and `examples/editorial-guide.md` in the same folder, add feed URLs, and install the optional live-source dependencies. The `editorial_guide` path is relative to the configuration file, so the pair can live outside the repository:
 
 ```sh
 python3 -m pip install -r requirements.txt
@@ -67,7 +67,7 @@ Respect publisher terms, robots policies, copyrights, and rate limits. Full-text
 python3 -m unittest discover -s tests -v
 ```
 
-The tests cover title filtering, duplicate removal, classification, unique selection, and prompt-pack rendering using fictional inputs.
+The tests cover title filtering, duplicate removal, classification, zero/invalid selection limits, time zones, extraction failures, and running the demo from a different folder. They use fictional inputs and simulated HTTP responses; they do not establish extraction accuracy on live publisher websites.
 
 ## Privacy boundary
 
