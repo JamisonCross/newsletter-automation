@@ -2,7 +2,7 @@
 
 A Python workflow that turns a large stream of articles into a smaller, organized briefing for an AI-assisted newsletter draft.
 
-I built the original version to reduce the repetitive work of checking feeds, removing duplicates, sorting stories, resolving article links, and assembling source material. This public version uses fictional sample data and generic editorial guidance. My private writing examples, voice rules, prompts, feed list, drafts, extracted articles, and publication files are not included.
+I built the original version to reduce the repetitive work of checking feeds, removing duplicates, sorting stories, resolving article links, and assembling source material. This public version uses fictional sample data and generic editorial guidance. My private writing examples, voice rules, prompts, and such are not included.
 
 ## What it does
 
